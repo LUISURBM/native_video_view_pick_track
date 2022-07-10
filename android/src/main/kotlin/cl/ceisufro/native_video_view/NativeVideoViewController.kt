@@ -63,7 +63,7 @@ class NativeVideoViewController(
         methodChannel.setMethodCallHandler(null)
         this.destroyVideoView()
         lifecycleProvider.getLifecycle()!!.removeObserver(this)
-        Log.d("NVV#NativeView", "Disposed view $id")
+        Log.d("NOM#NativeView", "Disposed view $id")
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -126,7 +126,7 @@ class NativeVideoViewController(
                 result.success(null)
             }
             "player#changeAudio" -> {
-                Log.d("NVV#NativeView", "player#changeAudio")
+                Log.d("NOM#NativeView", "player#changeAudio")
                 this.audio = call.argument("audio")!!
                 if (audio != null) {
                     changeAudio()
@@ -231,7 +231,7 @@ class NativeVideoViewController(
     
     override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean  {
         var tamanio = mp?.getTrackInfo()?.size!!
-        Log.d("NVV#setOnInfoListener", " Track Info $tamanio")
+        Log.d("NOM#setOnInfoListener", " Track Info $tamanio")
         var trackInfo = mp?.getTrackInfo()
         return true
     }
@@ -248,7 +248,7 @@ class NativeVideoViewController(
 
     private fun changeAudio() {
         if (mediaPlayer != null) {
-            Log.d("NVV#NativeView", "$audio")
+            Log.d("NOM#NativeView", "$audio")
             mediaPlayer?.selectTrack(audio)
         }
     }
@@ -273,21 +273,21 @@ class NativeVideoViewController(
         playerState = PlayerState.PREPARED
         
         var tamanio = mediaPlayer?.getTrackInfo()?.size!!
-        Log.d("NVV#setOnInfoListener", " Track Info $tamanio")
+        Log.d("NOM#notifyPlayerPrepared", " TrackInfo size $tamanio")
         var trackInfo = mediaPlayer?.getTrackInfo()
         
         val nameTable = mutableMapOf<String, Int>()
         
         var i = 0
         while(i < tamanio) {
-            Log.d("NVV#setOnInfoListener", " ${i} ")
+            Log.d("NOM#notifyPlayerPrepared", "getTrackInfo ${i} ")
             var it = mediaPlayer?.getTrackInfo()[i]
             if(it.getTrackType() == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_AUDIO){
                 nameTable[it.getLanguage()!!] =  i
             }
             i++
         }
-        Log.d("NVV#setOnInfoListener", " nameTable ")
+        Log.d("NOM#notifyPlayerPrepared", " Track Audio ${nameTable.size} ")
         arguments["languajes"] = nameTable
         methodChannel.invokeMethod("player#onPrepared", arguments)
     }
